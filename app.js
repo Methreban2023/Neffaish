@@ -28,7 +28,7 @@ passport.use(jwtStrategy);
 
 //routes
 app.use("/users", authRoutes);
-
+app.use("/api/movies", moviesRoutes);
 //errorhandlers:
 app.use(notFound);
 app.use(errorHandler);
