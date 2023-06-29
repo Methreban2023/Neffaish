@@ -2,26 +2,34 @@ const express = require("express");
 const connectDb = require("./database");
 const cors = require("cors");
 const morgan = require("morgan");
-const app = express();
 const notFound = require("./middlewares/notFoundHandler");
 const errorHandler = require("./middlewares/errorHandler");
-const tempRoutes = require("./api/temp/temp.routes");
+const authRoutes = require("./api/auth/auth.routes");
 const config = require("./config/keys");
 const passport = require("passport");
 const { localStrategy, jwtStrategy } = require("./middlewares/passport");
+const path = require("path");
 
-app.use(cors());
 connectDb();
+
+//declare var
+const app = express();
+
+//middlewares:
+app.use(cors());
 app.use(express.json());
+app.use("/media", express.static(path.join(__dirname, "media")));
 app.use(morgan("dev"));
 
+//passport
 app.use(passport.initialize());
 passport.use("local", localStrategy);
 passport.use(jwtStrategy);
 
-// Everything with the word temp is a placeholder that you'll change in accordance with your project
-app.use("/temp", tempRoutes);
+//routes
+app.use("/users", authRoutes);
 
+//errorhandlers:
 app.use(notFound);
 app.use(errorHandler);
 

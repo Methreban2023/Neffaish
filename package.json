@@ -1,7 +1,7 @@
 {
-  "name": "express-template-fs23",
+  "name": "express-project-Neffaish",
   "version": "1.0.0",
-  "description": "In this package, you will be able to set up your express app automatically which saves time for you to do your project so you don't have to worry about going through the same process of installing packages, creating folders for middleware, API, and models, creating the `database.js` file, and creating a `.env` file.",
+  "description": "special Thanks to Hmoud Alghanim for creating a template that saved us alot of time",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,7 +9,7 @@
     "devStart": "nodemon app.js"
   },
   "keywords": [],
-  "author": "HAlGhanim",
+  "author": "Dalia & Noura",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.0",
@@ -19,7 +19,9 @@
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.3.1",
     "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
     "passport": "^0.6.0",
+    "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0"
   },
   "devDependencies": {
