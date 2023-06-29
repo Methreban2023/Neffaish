@@ -6,8 +6,8 @@ exports.fetchUser = async (userId, next) => {
   try {
     const user = await User.findById(userId);
     return user;
-  } catch (error) {
-    return next(error);
+  } catch (err) {
+    return next(err);
   }
 };
 
@@ -15,60 +15,91 @@ exports.getUser = async (req, res, next) => {
   try {
     const users = await User.find().select("-__v");
     return res.status(200).json(users);
-  } catch (error) {
-    return next(error);
+  } catch (err) {
+    return next(err);
   }
 };
 
 exports.createStaff = async (req, res, next) => {
   try {
     const { password } = req.body;
-    req.body.password = await passHash(password);
+    req.body.password = await passHash(password, next);
     req.body.staff = "true";
     const newUser = await User.create(req.body);
 
-    const token = generateToken(newUser);
+    const token = generateToken(newUser, next);
     return res.status(201).json({ token });
   } catch (err) {
-    return res.status(500).json(err.message);
+    return next(err);
+    // return res.status(500).json(err.message);
   }
 };
 
-exports.signup = async (req, res) => {
+exports.signup = async (req, res, next) => {
   try {
     //encrypt the password
     const { password } = req.body;
-    req.body.password = await passHash(password);
+    req.body.password = await passHash(password, next);
     //assign false to staff to diffrentiate between staff and normal users
     req.body.staff = "false";
     //create user with encrypted password
 
     const newUser = await User.create(req.body);
-    console.log(`exports.signup -> hashedPassword`, req.body.password);
+    // console.log(`exports.signup -> hashedPassword`, req.body.password);
     //create token
-    const token = generateToken(newUser);
+    const token = generateToken(newUser, next);
 
-    res.status(201).json({ token });
+    return res.status(201).json({ token });
   } catch (err) {
-    res.status(500).json("Server Error");
+    //  res.status(500).json("Server Error");
+    return next(err);
   }
 };
 
-exports.signin = async (req, res) => {
+exports.signin = async (req, res, next) => {
   try {
     const token = generateToken(req.user);
     return res.status(200).json({ token });
   } catch (err) {
-    return res.status(500).json(err.message);
+    // return res.status(500).json(err.message);
+    return next(err);
+  }
+};
+
+exports.updateAnyUser = async (req, res, next) => {
+  try {
+    const { staff } = req.params.staffId;
+    console.log(req.params.staffId);
+    // console.log(`${staff.username} ${staff.staff}`);
+    await User.findByIdAndUpdate(req.user.id, req.body);
+    // if (userInfo.staff === "true"){
+
+    // }
+  } catch (err) {
+    next(err);
   }
 };
 
 exports.updateUser = async (req, res, next) => {
   try {
-    await User.findByIdAndUpdate(req.user.id, req.body);
+    const userInfo = await User.findById(req.user._id);
+    if (userInfo) {
+      if (userInfo.staff === "true")
+        await User.findByIdAndUpdate(req.user.id, req.body);
+      else {
+        // await User.updateOne;
+
+        if (foundPost) {
+          await foundPost.updateOne(req.body);
+          res.status(204).end();
+        } else {
+          res.status(404).json({ message: "post not found" });
+        }
+      }
+    }
     return res.status(204).end();
-  } catch (error) {
-    return next(error);
+  } catch (err) {
+    return next(err);
   }
 };
 
@@ -76,7 +107,7 @@ exports.deleteUser = async (req, res, next) => {
   try {
     await User.findByIdAndRemove({ _id: req.user.id });
     return res.status(204).end();
-  } catch (error) {
-    return next(error);
+  } catch (err) {
+    return next(err);
   }
 };

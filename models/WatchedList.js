@@ -1,8 +1,12 @@
 const { model, Schema } = require("mongoose");
+const Movie = require("./Movie");
 
 const watchedSchema = new Schema(
   {
-    users: { type: Schema.Types.ObjectId, ref: "User" },
+    // user
+    // movie
+    // watched
+    user: { type: Schema.Types.ObjectId, ref: "User" },
     movies: [
       {
         movie: { type: Schema.Types.ObjectId, ref: "Movie" },

@@ -7,6 +7,13 @@ const movieSchema = new Schema(
     createdBy: { type: Schema.Types.ObjectId, ref: "User" },
     genre: { type: Schema.Types.ObjectId, ref: "Genre" },
     updateGenreBy: { type: Schema.Types.ObjectId, ref: "User" },
+    releaseDate: Date,
+    reviews: [
+      {
+        userId: { type: Schema.Types.ObjectId, ref: "User" },
+        reviewText: String,
+      },
+    ],
     rating: [
       {
         userId: { type: Schema.Types.ObjectId, ref: "User" },

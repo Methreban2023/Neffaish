@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const config = require("../../config/keys");
 
-module.exports = (user) => {
+module.exports = (user, next) => {
   const payload = {
     _id: user._id,
     username: user.username,
