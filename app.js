@@ -25,12 +25,13 @@ app.use(morgan("dev"));
 //passport
 app.use(passport.initialize());
 passport.use("local", localStrategy);
-passport.use(jwtStrategy);
+passport.use("jwt", jwtStrategy);
 
 //routes
 app.use("/users", authRoutes);
 // app.use("/movies", movieRoutes);
 app.use("/api/movies", moviesRoutes);
+
 //errorhandlers:
 app.use(notFound);
 app.use(errorHandler);
