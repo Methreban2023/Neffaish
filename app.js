@@ -1,14 +1,15 @@
-const express = require("express");
-const connectDb = require("./database");
 const cors = require("cors");
 const morgan = require("morgan");
+const express = require("express");
 const notFound = require("./middlewares/notFoundHandler");
-const errorHandler = require("./middlewares/errorHandler");
 const authRoutes = require("./api/auth/auth.routes");
+const errorHandler = require("./middlewares/errorHandler");
 const moviesRoutes = require("./api/movie/movies.routes");
+const genreRoutes = require("./api/genre/genre.routes");
 const celebRoutes = require("./api/celebrity/celeb.routes");
-const config = require("./config/keys");
+const connectDb = require("./database");
 const passport = require("passport");
+const config = require("./config/keys");
 const { localStrategy, jwtStrategy } = require("./middlewares/passport");
 const path = require("path");
 
@@ -29,7 +30,9 @@ passport.use(localStrategy);
 passport.use(jwtStrategy);
 
 //routes
+
 app.use("/users", authRoutes);
+app.use("/api/genre", genreRoutes);
 // app.use("/movies", movieRoutes);
 app.use("/api/movies", moviesRoutes);
 app.use("/api/celebrities", celebRoutes);

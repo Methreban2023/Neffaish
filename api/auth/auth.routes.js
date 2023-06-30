@@ -4,7 +4,6 @@ const {
   createStaff,
   updateUser,
   deleteUser,
-  fetchUser,
   signin,
   signup,
   updateAnyUser,
@@ -12,12 +11,13 @@ const {
 const router = express.Router();
 const passport = require("passport");
 const { param } = require("../../utils/params/param");
+const uploader = require("../../middlewares/uploader");
 
 router.param("userId", param);
 
 router.get("/", passport.authenticate("jwt", { session: false }), getUser);
-router.post("/createStaff", createStaff);
-router.post("/signup", signup);
+router.post("/createStaff", uploader.single("photo"), createStaff);
+router.post("/signup", uploader.single("photo"), signup);
 router.post(
   "/signin",
   passport.authenticate("local", { session: false }),

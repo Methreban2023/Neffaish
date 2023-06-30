@@ -1,16 +1,6 @@
 const Movie = require("../../models/Movie");
 const Celebrity = require("../../models/Celebrity");
 const User = require("../../models/User");
-// const { fetch } = require("../../utils/params/fetch");
-
-// exports.fetchUser = async (userId, next) => {
-//   try {
-//     const user = await User.findById(userId);
-//     return user;
-//   } catch (err) {
-//     return next(err);
-//   }
-// };
 
 exports.getAllMovies = async (req, res, next) => {
   try {
@@ -20,24 +10,36 @@ exports.getAllMovies = async (req, res, next) => {
     next(error);
   }
 };
-
-exports.createMovie = async (req, res, next) => {
+exports.movieRating = async (req, res, next) => {
   try {
-    //to check if the user is a staff member:
-    if (req.user.staff === true) {
-      req.body.createdBy = req.user._id;
-      const newMovie = await Movie.create(req.body);
-      return res.status(201).json({ newMovie });
-    } else {
-      res.status(401).json({
-        message:
-          "the user is not a staff member and not allowed to create movie!",
-      });
+    const { movieId } = req.params;
+    if (req.user.staff === false) {
+      const movie = await Movie.findById(movieId);
+      if (movie) {
+        req.body.ratings.userId = req.user._id;
+
+        if (+req.body.ratings.rate >= 0 && +req.body.ratings.rate <= 10) {
+          await movie.updateOne({
+            $push: {
+              ratings: [
+                {
+                  userId: req.body.ratings.userId,
+                  rate: req.body.ratings.rate,
+                },
+              ],
+            },
+          });
+          return res.status(204).end();
+        } else {
+          return res
+            .status(500)
+            .json({ message: "ratings is not in range of 0-10" });
+        }
+      }
     }
-    next();
   } catch (err) {
-    return next(err);
-    // return res.status(500).json(err.message);
+    // res.status(500).json({ message: error.message });
+    next(err);
   }
 };
 

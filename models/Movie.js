@@ -13,7 +13,7 @@ const movieSchema = new Schema(
         reviewText: String,
       },
     ],
-    rating: [
+    ratings: [
       {
         userId: { type: Schema.Types.ObjectId, ref: "User" },
         rate: { type: Number, default: 0 },
