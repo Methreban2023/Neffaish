@@ -23,19 +23,6 @@ router.param("userId", async (req, res, next, userId) => {
     return next(error);
   }
 });
-router.param("staffId", async (req, res, next, userId) => {
-  try {
-    const foundUser = await fetchUser(userId, next);
-
-    if (!foundUser)
-      return next({ status: 404, message: "User not found for staff" });
-    req.user = foundUser;
-    req.params.staffId = foundUser;
-    next();
-  } catch (error) {
-    return next(error);
-  }
-});
 
 router.get("/", passport.authenticate("jwt", { session: false }), getUser);
 router.post("/createStaff", createStaff);
@@ -47,7 +34,7 @@ router.post(
 );
 
 router.put("/:userId", updateUser);
-router.patch("/:staffId/:userId", updateAnyUser);
+router.patch("/:userId", updateAnyUser);
 router.delete("/:userId", deleteUser);
 
 module.exports = router;
