@@ -6,6 +6,7 @@ const notFound = require("./middlewares/notFoundHandler");
 const errorHandler = require("./middlewares/errorHandler");
 const authRoutes = require("./api/auth/auth.routes");
 const moviesRoutes = require("./api/movie/movies.routes");
+const celebRoutes = require("./api/celebrity/celeb.routes");
 const config = require("./config/keys");
 const passport = require("passport");
 const { localStrategy, jwtStrategy } = require("./middlewares/passport");
@@ -24,14 +25,14 @@ app.use(morgan("dev"));
 
 //passport
 app.use(passport.initialize());
-passport.use("local", localStrategy);
-passport.use("jwt", jwtStrategy);
+passport.use(localStrategy);
+passport.use(jwtStrategy);
 
 //routes
 app.use("/users", authRoutes);
 // app.use("/movies", movieRoutes);
 app.use("/api/movies", moviesRoutes);
-
+app.use("/api/celebrities", celebRoutes);
 //errorhandlers:
 app.use(notFound);
 app.use(errorHandler);

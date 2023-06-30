@@ -6,7 +6,6 @@ const movieSchema = new Schema(
     celebrity: [{ type: Schema.Types.ObjectId, ref: "Celebrity" }],
     createdBy: { type: Schema.Types.ObjectId, ref: "User" },
     genre: { type: Schema.Types.ObjectId, ref: "Genre" },
-    updateGenreBy: { type: Schema.Types.ObjectId, ref: "User" },
     releaseDate: Date,
     reviews: [
       {

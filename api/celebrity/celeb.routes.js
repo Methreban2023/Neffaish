@@ -2,16 +2,15 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 const { getCelebrity, createCelebrity } = require("./celeb.controllers");
+const { param } = require("../../utils/params/param");
+
+router.param("userId", param);
 
 //celebrity routers
-router.get(
-  "/celebrity/:userId",
-  passport.authenticate("jwt", { session: false }),
-  getCelebrity
-);
+router.get("/", getCelebrity);
 
 router.post(
-  "/celebrity/:userId",
+  "/",
   passport.authenticate("jwt", { session: false }),
   createCelebrity
 );

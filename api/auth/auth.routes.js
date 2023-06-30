@@ -11,18 +11,9 @@ const {
 } = require("./auth.controllers");
 const router = express.Router();
 const passport = require("passport");
+const { param } = require("../../utils/params/param");
 
-router.param("userId", async (req, res, next, userId) => {
-  try {
-    const foundUser = await fetchUser(userId, next);
-    if (!foundUser) return next({ status: 404, message: "User not found" });
-    req.user = foundUser;
-
-    next();
-  } catch (error) {
-    return next(error);
-  }
-});
+router.param("userId", param);
 
 router.get("/", passport.authenticate("jwt", { session: false }), getUser);
 router.post("/createStaff", createStaff);
