@@ -5,6 +5,7 @@ const celebritySchema = new Schema(
     name: { type: String, unique: true, required: true },
     createdBy: { type: Schema.Types.ObjectId, ref: "User" },
     updateGenreBy: { type: Schema.Types.ObjectId, ref: "User" },
+    movies: [{ type: Schema.Types.ObjectId, ref: "Movie" }],
   },
   { timestamps: true }
 );

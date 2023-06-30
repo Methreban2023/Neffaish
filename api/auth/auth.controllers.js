@@ -58,7 +58,7 @@ exports.signup = async (req, res, next) => {
 
 exports.signin = async (req, res, next) => {
   try {
-    const token = generateToken(req.user);
+    const token = generateToken(req.user, next);
     return res.status(200).json({ token });
   } catch (err) {
     // return res.status(500).json(err.message);
