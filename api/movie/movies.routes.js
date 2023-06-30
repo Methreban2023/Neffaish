@@ -14,18 +14,14 @@ router.param("userId", async (req, res, next, userId) => {
   try {
     const foundUser = await fetchUser(userId, next);
     if (!foundUser) return next({ status: 404, message: "User not found" });
-    req.user = foundUser;
+    req.subuser = foundUser;
     next();
   } catch (error) {
     return next(error);
   }
 });
 
-router.get(
-  "/movie",
-  passport.authenticate("jwt", { session: false }),
-  getAllMovies
-);
+router.get("/movie", getAllMovies);
 // router.get("/:movieId", getOneMovie);
 
 router.post(

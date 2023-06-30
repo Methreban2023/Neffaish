@@ -12,10 +12,9 @@ exports.getAllMovies = async (req, res, next) => {
 
 exports.createMovie = async (req, res, next) => {
   try {
-    const { userInfo } = req.user;
+    const { userInfo } = req.subuser;
 
     //to check if the user is a staff member:
-
     if (userInfo.staff === "true") {
       req.body.createdBy = userInfo._id;
       const newMovie = await Movie.create(req.body);
@@ -42,8 +41,12 @@ exports.getCelebrity = async (req, res, next) => {
 };
 exports.createCelebrity = async (req, res, next) => {
   try {
-    const newCelebrity = await Celebrity.create(req.body);
-    return res.status(201).json(newCelebrity);
+    const { userInfo } = req.subuser;
+    if (userInfo.staff === "true") {
+      const newCelebrity = await Celebrity.create(req.body);
+      return res.status(201).json(newCelebrity);
+    } else {
+    }
   } catch (error) {
     next(error);
   }
