@@ -43,6 +43,9 @@ exports.signup = async (req, res, next) => {
     //assign false to staff to diffrentiate between staff and normal users
     req.body.staff = "false";
     //create user with encrypted password
+    if (req.file) {
+      req.body.photo = req.file.path.replace("\\", "/");
+    }
 
     const newUser = await User.create(req.body);
     // console.log(`exports.signup -> hashedPassword`, req.body.password);
