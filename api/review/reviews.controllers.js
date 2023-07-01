@@ -2,14 +2,16 @@ const Movie = require("../../models/Movie");
 const Review = require("../../models/Review");
 const User = require("../../models/User");
 
-exports.getOneReview = async (req, res, next) => {
-  try {
-    const review = await Review.find().populate("Movie User reviewText");
-    res.status(200).json(review);
-  } catch (error) {
-    next(error);
-  }
-};
+// exports.getUserReview = async (req, res, next) => {
+//   try {
+//     const { movieId } = req.params;
+
+//     const review = await Review.find().populate("Movie User reviewText");
+//     res.status(200).json(review);
+//   } catch (error) {
+//     next(error);
+//   }
+// };
 
 exports.getAllReviews = async (req, res, next) => {
   try {

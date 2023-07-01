@@ -7,6 +7,7 @@ const {
   signin,
   signup,
   updateAnyUser,
+  getUserReviews,
 } = require("./auth.controllers");
 const router = express.Router();
 const passport = require("passport");
@@ -27,5 +28,6 @@ router.post(
 router.put("/:userId", updateUser);
 router.patch("/:userId", updateAnyUser);
 router.delete("/:userId", deleteUser);
+router.get("/userReviews", getUserReviews);
 
 module.exports = router;

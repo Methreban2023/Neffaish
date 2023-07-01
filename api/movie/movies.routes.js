@@ -15,7 +15,6 @@ const { param } = require("../../utils/params/param");
 router.param("userId", param);
 
 router.get("/", getAllMovies);
-// router.get("/:movieId", getOneMovie);
 router.get("/:movieId", getOneMovie);
 router.post(
   "/:movieId/:celebrityId",

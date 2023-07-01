@@ -7,6 +7,7 @@ const errorHandler = require("./middlewares/errorHandler");
 const moviesRoutes = require("./api/movie/movies.routes");
 const genreRoutes = require("./api/genre/genre.routes");
 const celebRoutes = require("./api/celebrity/celeb.routes");
+const reviewRoutes = require("./api/review/reviews.routes");
 const connectDb = require("./database");
 const passport = require("passport");
 const config = require("./config/keys");
@@ -33,9 +34,10 @@ passport.use(jwtStrategy);
 
 app.use("/users", authRoutes);
 app.use("/api/genre", genreRoutes);
-// app.use("/movies", movieRoutes);
 app.use("/api/movies", moviesRoutes);
 app.use("/api/celebrities", celebRoutes);
+app.use("/api/reviews", reviewRoutes);
+
 //errorhandlers:
 app.use(notFound);
 app.use(errorHandler);

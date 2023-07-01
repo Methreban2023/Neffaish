@@ -1,16 +1,8 @@
 const User = require("../../models/User");
+const Review = require("../../models/Review");
 const passHash = require("../../utils/auth/passhash");
 const generateToken = require("../../utils/auth/generateToken");
-// const { fetch } = require("../../utils/params/fetch");
 
-// exports.fetchUser = async (userId, next) => {
-//   try {
-//     const user = await User.findById(userId);
-//     return user;
-//   } catch (err) {
-//     return next(err);
-//   }
-// };
 exports.getUser = async (req, res, next) => {
   try {
     const users = await User.find(); //.select("-__v");
@@ -46,9 +38,7 @@ exports.signup = async (req, res, next) => {
     if (req.file) {
       req.body.photo = req.file.path.replace("\\", "/");
     }
-
     const newUser = await User.create(req.body);
-    // console.log(`exports.signup -> hashedPassword`, req.body.password);
     //create token
     const token = generateToken(newUser, next);
 
@@ -112,5 +102,18 @@ exports.deleteUser = async (req, res, next) => {
     return res.status(204).end();
   } catch (err) {
     return next(err);
+  }
+};
+
+exports.getUserReviews = async (req, res, next) => {
+  try {
+    // const { movieId } = req.params;
+    const { userId } = req.user;
+    const review = await Review.find({ "users.userId": userId }).populate(
+      "User "
+    );
+    res.status(200).json(review);
+  } catch (error) {
+    next(error);
   }
 };

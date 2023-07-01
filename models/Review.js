@@ -5,7 +5,7 @@ const reviewSchema = new Schema(
     movies: { type: Schema.Types.ObjectId, ref: "Movie" },
     users: [
       {
-        username: { type: Schema.Types.ObjectId, ref: "User" },
+        userId: { type: Schema.Types.ObjectId, ref: "User" },
         reviewText: { type: String },
       },
     ],

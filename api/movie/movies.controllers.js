@@ -4,7 +4,7 @@ const User = require("../../models/User");
 
 exports.getAllMovies = async (req, res, next) => {
   try {
-    const movies = await Movie.find();
+    const movies = await Movie.find(); //.populate("celebrity ratings reviews");
     res.status(200).json(movies);
   } catch (error) {
     next(error);
@@ -13,8 +13,9 @@ exports.getAllMovies = async (req, res, next) => {
 
 exports.getOneMovie = async (req, res, next) => {
   try {
-    const movie = await Movie.findById().populate(
-      "title celebrity createdBy genre reviews ratings"
+    const { movieId } = req.params;
+    const movie = await Movie.findById(movieId).populate(
+      "celebrity ratings reviews"
     );
     res.status(200).json(movie);
   } catch (error) {
@@ -65,8 +66,8 @@ exports.getCelebrity = async (req, res, next) => {
 };
 exports.createCelebrity = async (req, res, next) => {
   try {
-    const { userInfo } = req.subuser;
-    if (userInfo.staff === "true") {
+    // const { userInfo } = req.subuser;
+    if (req.user.staff === true) {
       const newCelebrity = await Celebrity.create(req.body);
       return res.status(201).json(newCelebrity);
     } else {
