@@ -24,11 +24,28 @@ exports.getAllReviews = async (req, res, next) => {
 
 exports.createReview = async (req, res, next) => {
   try {
+    const { movieId } = req.params;
     //to check if the user is a registered:
     if (req.user === true) {
-      req.body.createdBy = req.user._id;
-      const newReview = await Review.create(req.body);
-      return res.status(201).json({ newReview });
+      const movie = await Movie.findById(movieId);
+      if (movie) {
+        // req.body.createdBy = req.user._id;
+        req.body.movie = movie;
+        req.body.usersReviews;
+        const newReview = await Review.create(req.body);
+        await movie.updateOne({
+          $push: {
+            movie: movieId,
+            usersReviews: [
+              {
+                userId: req.user._id,
+                reviewText: req.body.reviewText,
+              },
+            ],
+          },
+        });
+        return res.status(201).json({ newReview });
+      }
     } else {
       res.status(401).json({
         message: "you can not write a commint unless you are a member",
