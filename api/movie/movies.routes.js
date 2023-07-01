@@ -4,7 +4,7 @@ const passport = require("passport");
 
 const {
   getAllMovies,
-  //   getOneMovie,
+  getOneMovie,
   //   updateMovie,
   //   deleteMovie,
   movieRating,
@@ -16,7 +16,7 @@ router.param("userId", param);
 
 router.get("/", getAllMovies);
 // router.get("/:movieId", getOneMovie);
-
+router.get("/:movieId", getOneMovie);
 router.post(
   "/:movieId/:celebrityId",
   passport.authenticate("jwt", { session: false }),

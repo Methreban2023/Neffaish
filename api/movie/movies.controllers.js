@@ -10,6 +10,18 @@ exports.getAllMovies = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.getOneMovie = async (req, res, next) => {
+  try {
+    const movie = await Movie.findById().populate(
+      "title celebrity createdBy genre reviews ratings"
+    );
+    res.status(200).json(movie);
+  } catch (error) {
+    next(error);
+  }
+};
+
 exports.movieRating = async (req, res, next) => {
   try {
     const { movieId } = req.params;

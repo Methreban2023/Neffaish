@@ -7,6 +7,7 @@ const userSchema = new Schema(
     email: { type: String, unique: true },
     staff: { type: Boolean, default: false },
     photo: { type: String },
+    reviews: [{ type: Schema.Types.ObjectId, ref: "Review" }],
   },
   { timestamps: true }
 );
