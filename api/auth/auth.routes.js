@@ -4,29 +4,20 @@ const {
   createStaff,
   updateUser,
   deleteUser,
-  fetchUser,
   signin,
   signup,
   updateAnyUser,
 } = require("./auth.controllers");
 const router = express.Router();
 const passport = require("passport");
+const { param } = require("../../utils/params/param");
+const uploader = require("../../middlewares/uploader");
 
-router.param("userId", async (req, res, next, userId) => {
-  try {
-    const foundUser = await fetchUser(userId, next);
-    if (!foundUser) return next({ status: 404, message: "User not found" });
-    req.user = foundUser;
-
-    next();
-  } catch (error) {
-    return next(error);
-  }
-});
+router.param("userId", param);
 
 router.get("/", passport.authenticate("jwt", { session: false }), getUser);
-router.post("/createStaff", createStaff);
-router.post("/signup", signup);
+router.post("/createStaff", uploader.single("photo"), createStaff);
+router.post("/signup", uploader.single("photo"), signup);
 router.post(
   "/signin",
   passport.authenticate("local", { session: false }),

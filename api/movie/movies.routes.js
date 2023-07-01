@@ -1,40 +1,28 @@
 const express = require("express");
 const router = express.Router();
 const passport = require("passport");
+
 const {
   getAllMovies,
   //   getOneMovie,
   //   updateMovie,
   //   deleteMovie,
-  createMovie,
+  movieRating,
   celebrityAdd,
 } = require("./movies.controllers");
+const { param } = require("../../utils/params/param");
 
-router.param("userId", async (req, res, next, userId) => {
-  try {
-    const foundUser = await fetchUser(userId, next);
-    if (!foundUser) return next({ status: 404, message: "User not found" });
-    req.subuser = foundUser;
-    next();
-  } catch (error) {
-    return next(error);
-  }
-});
+router.param("userId", param);
 
-router.get("/movie", getAllMovies);
+router.get("/", getAllMovies);
 // router.get("/:movieId", getOneMovie);
 
 router.post(
-  "/movie/:userId",
-  passport.authenticate("jwt", { session: false }),
-  createMovie
-);
-
-router.post(
-  "/:movieId/:celebrityId/:userId",
+  "/:movieId/:celebrityId",
   passport.authenticate("jwt", { session: false }),
   celebrityAdd
 );
+router.patch("/:movieId", movieRating);
 // router.put("/:movieId", updateMovie);
 // router.delete("/:movieId", deleteMovie);
 

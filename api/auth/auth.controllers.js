@@ -1,19 +1,19 @@
 const User = require("../../models/User");
 const passHash = require("../../utils/auth/passhash");
 const generateToken = require("../../utils/auth/generateToken");
+// const { fetch } = require("../../utils/params/fetch");
 
-exports.fetchUser = async (userId, next) => {
-  try {
-    const user = await User.findById(userId);
-    return user;
-  } catch (err) {
-    return next(err);
-  }
-};
-
+// exports.fetchUser = async (userId, next) => {
+//   try {
+//     const user = await User.findById(userId);
+//     return user;
+//   } catch (err) {
+//     return next(err);
+//   }
+// };
 exports.getUser = async (req, res, next) => {
   try {
-    const users = await User.find().select("-__v");
+    const users = await User.find(); //.select("-__v");
     return res.status(200).json(users);
   } catch (err) {
     return next(err);
@@ -43,6 +43,9 @@ exports.signup = async (req, res, next) => {
     //assign false to staff to diffrentiate between staff and normal users
     req.body.staff = "false";
     //create user with encrypted password
+    if (req.file) {
+      req.body.photo = req.file.path.replace("\\", "/");
+    }
 
     const newUser = await User.create(req.body);
     // console.log(`exports.signup -> hashedPassword`, req.body.password);
@@ -84,7 +87,7 @@ exports.updateUser = async (req, res, next) => {
   try {
     const userInfo = await User.findById(req.user._id);
     if (userInfo) {
-      if (userInfo.staff === "true")
+      if (userInfo.staff === true)
         await User.findByIdAndUpdate(req.user.id, req.body);
       else {
         // await User.updateOne;

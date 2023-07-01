@@ -1,5 +1,6 @@
 const Movie = require("../../models/Movie");
 const Celebrity = require("../../models/Celebrity");
+const User = require("../../models/User");
 
 exports.getAllMovies = async (req, res, next) => {
   try {
@@ -9,25 +10,36 @@ exports.getAllMovies = async (req, res, next) => {
     next(error);
   }
 };
-
-exports.createMovie = async (req, res, next) => {
+exports.movieRating = async (req, res, next) => {
   try {
-    const { userInfo } = req.subuser;
+    const { movieId } = req.params;
+    if (req.user.staff === false) {
+      const movie = await Movie.findById(movieId);
+      if (movie) {
+        req.body.ratings.userId = req.user._id;
 
-    //to check if the user is a staff member:
-    if (userInfo.staff === "true") {
-      req.body.createdBy = userInfo._id;
-      const newMovie = await Movie.create(req.body);
-      return res.status(201).json({ newMovie });
-    } else {
-      console.log(
-        "the user is not a staff member and not allowed to create movie!"
-      );
-      next();
+        if (+req.body.ratings.rate >= 0 && +req.body.ratings.rate <= 10) {
+          await movie.updateOne({
+            $push: {
+              ratings: [
+                {
+                  userId: req.body.ratings.userId,
+                  rate: req.body.ratings.rate,
+                },
+              ],
+            },
+          });
+          return res.status(204).end();
+        } else {
+          return res
+            .status(500)
+            .json({ message: "ratings is not in range of 0-10" });
+        }
+      }
     }
   } catch (err) {
-    return next(err);
-    // return res.status(500).json(err.message);
+    // res.status(500).json({ message: error.message });
+    next(err);
   }
 };
 
@@ -46,6 +58,10 @@ exports.createCelebrity = async (req, res, next) => {
       const newCelebrity = await Celebrity.create(req.body);
       return res.status(201).json(newCelebrity);
     } else {
+      res.status(401).json({
+        message:
+          "the user is not a staff member and not allowed to create celebrity!",
+      });
     }
   } catch (error) {
     next(error);
@@ -55,14 +71,32 @@ exports.createCelebrity = async (req, res, next) => {
 exports.celebrityAdd = async (req, res, next) => {
   try {
     const { celebrityId } = req.params;
-    const celebrity = await Celebrity.findById(celebrityId);
-    await Movie.findByIdAndUpdate(req.celebrity._id, {
-      $push: { celebrity: celebrity._id },
-    });
-    await Celebrity.findByIdAndUpdate(celebrityId, {
-      $push: { movies: req.movie._id },
-    });
-    res.status(204).end();
+    const { movieId } = req.params;
+    if (req.user.staff === true) {
+      req.body.createdBy = req.user._id;
+
+      const movie = await Movie.findById(movieId);
+      const celebrity = await Celebrity.findById(celebrityId);
+
+      if (movie && celebrity) {
+        await movie.updateOne({
+          $push: { celebrity: celebrityId },
+        });
+
+        await celebrity.updateOne({
+          $push: { movies: movieId },
+        });
+
+        res.status(204).end();
+      } else {
+        res.status(404).json({ message: "Movie or Celeb not found" });
+      }
+    } else {
+      res.status(401).json({
+        message:
+          "the user is not a staff member and not allowed to add celebrity to movie!",
+      });
+    }
   } catch (error) {
     next(error);
   }
