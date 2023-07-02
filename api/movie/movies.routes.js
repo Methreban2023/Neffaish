@@ -7,7 +7,6 @@ const {
   getOneMovie,
   //   updateMovie,
   //   deleteMovie,
-  movieRating,
   celebrityAdd,
 } = require("./movies.controllers");
 const { param } = require("../../utils/params/param");

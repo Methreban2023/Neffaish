@@ -107,12 +107,9 @@ exports.deleteUser = async (req, res, next) => {
 
 exports.getUserReviews = async (req, res, next) => {
   try {
-    // const { movieId } = req.params;
-    const { userId } = req.user;
-    const review = await Review.find({ "users.userId": userId }).populate(
-      "User "
-    );
-    res.status(200).json(review);
+    const userId = req.user._id;
+    const reviews = await User.find({ _id: userId }).populate("reviews");
+    res.status(200).json(reviews);
   } catch (error) {
     next(error);
   }

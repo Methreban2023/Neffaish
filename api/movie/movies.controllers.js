@@ -4,7 +4,7 @@ const Celebrity = require("../../models/Celebrity");
 
 exports.getAllMovies = async (req, res, next) => {
   try {
-    const movies = await Movie.find().populate("reviews"); //.populate("celebrity ratings reviews");
+    const movies = await Movie.find().populate("reviews celebrity createdBy"); //.populate("celebrity ratings reviews");
     res.status(200).json(movies);
   } catch (error) {
     next(error);
@@ -14,7 +14,9 @@ exports.getAllMovies = async (req, res, next) => {
 exports.getOneMovie = async (req, res, next) => {
   try {
     const { movieId } = req.params;
-    const movie = await Movie.findById(movieId).populate("celebrity reviews");
+    const movie = await Movie.findById(movieId).populate(
+      "celebrity reviews createdBy"
+    );
     res.status(200).json(movie);
   } catch (error) {
     next(error);
@@ -82,31 +84,6 @@ exports.getOneMovie = async (req, res, next) => {
 //     next(err);
 //   }
 // };
-
-exports.getCelebrity = async (req, res, next) => {
-  try {
-    const celebrities = await Celebrity.find().populate("movies");
-    return res.json(celebrities);
-  } catch (error) {
-    return next(error);
-  }
-};
-exports.createCelebrity = async (req, res, next) => {
-  try {
-    // const { userInfo } = req.subuser;
-    if (req.user.staff === true) {
-      const newCelebrity = await Celebrity.create(req.body);
-      return res.status(201).json(newCelebrity);
-    } else {
-      res.status(401).json({
-        message:
-          "the user is not a staff member and not allowed to create celebrity!",
-      });
-    }
-  } catch (error) {
-    next(error);
-  }
-};
 
 exports.celebrityAdd = async (req, res, next) => {
   try {

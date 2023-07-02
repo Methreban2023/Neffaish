@@ -28,6 +28,10 @@ router.post(
 router.put("/:userId", updateUser);
 router.patch("/:userId", updateAnyUser);
 router.delete("/:userId", deleteUser);
-router.get("/userReviews", getUserReviews);
+router.get(
+  "/userReviews",
+  passport.authenticate("jwt", { session: false }),
+  getUserReviews
+);
 
 module.exports = router;
