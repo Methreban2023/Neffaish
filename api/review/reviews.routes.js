@@ -9,7 +9,7 @@ router.param("userId", param);
 router.get("/", getAllReviews);
 
 router.post(
-  "/movieId",
+  "/:movieId",
   passport.authenticate("jwt", { session: false }),
   createReview
 );

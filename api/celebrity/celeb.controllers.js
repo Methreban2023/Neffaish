@@ -14,7 +14,7 @@ const User = require("../../models/User");
 
 exports.getCelebrity = async (req, res, next) => {
   try {
-    const celebrities = await Celebrity.find();
+    const celebrities = await Celebrity.find().populate("movies");
     res.status(200).json(celebrities);
   } catch (error) {
     next(error);

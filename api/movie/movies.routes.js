@@ -21,7 +21,11 @@ router.post(
   passport.authenticate("jwt", { session: false }),
   celebrityAdd
 );
-router.patch("/:movieId", movieRating);
+// router.patch(
+//   "/:movieId",
+//   passport.authenticate("jwt", { session: false }),
+//   movieRating
+// );
 // router.put("/:movieId", updateMovie);
 // router.delete("/:movieId", deleteMovie);
 

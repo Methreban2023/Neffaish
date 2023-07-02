@@ -1,10 +1,10 @@
 const Movie = require("../../models/Movie");
 const Celebrity = require("../../models/Celebrity");
-const User = require("../../models/User");
+// const User = require("../../models/User");
 
 exports.getAllMovies = async (req, res, next) => {
   try {
-    const movies = await Movie.find(); //.populate("celebrity ratings reviews");
+    const movies = await Movie.find().populate("reviews"); //.populate("celebrity ratings reviews");
     res.status(200).json(movies);
   } catch (error) {
     next(error);
@@ -14,47 +14,74 @@ exports.getAllMovies = async (req, res, next) => {
 exports.getOneMovie = async (req, res, next) => {
   try {
     const { movieId } = req.params;
-    const movie = await Movie.findById(movieId).populate(
-      "celebrity ratings reviews"
-    );
+    const movie = await Movie.findById(movieId).populate("celebrity reviews");
     res.status(200).json(movie);
   } catch (error) {
     next(error);
   }
 };
 
-exports.movieRating = async (req, res, next) => {
-  try {
-    const { movieId } = req.params;
-    if (req.user.staff === false) {
-      const movie = await Movie.findById(movieId);
-      if (movie) {
-        req.body.ratings.userId = req.user._id;
+// exports.movieRating = async (req, res, next) => {
+//   try {
+//     const { movieId } = req.params;
+//     if (req.user.staff == false) {
+//       const movie = await Movie.findById(movieId);
+//       if (movie) {
+//         console.log(`${movie.title}`);
+//         if (+req.body.rate >= 0 && +req.body.rate <= 10) {
+//           const movieUserString = movie.ratings.user
+//             ? movie.ratings.user.toString()
+//             : "";
+//           const requestUserString = req.user._id ? req.user._id.toString() : "";
+//           //
+//           Movie.find({ _id: movieId, "ratings.user": req.user._id })
+//             .then((movies) => {
+//               console.log(movies._id);
+//               console.log(movies);
+//             })
 
-        if (+req.body.ratings.rate >= 0 && +req.body.ratings.rate <= 10) {
-          await movie.updateOne({
-            $push: {
-              ratings: [
-                {
-                  userId: req.body.ratings.userId,
-                  rate: req.body.ratings.rate,
-                },
-              ],
-            },
-          });
-          return res.status(204).end();
-        } else {
-          return res
-            .status(500)
-            .json({ message: "ratings is not in range of 0-10" });
-        }
-      }
-    }
-  } catch (err) {
-    // res.status(500).json({ message: error.message });
-    next(err);
-  }
-};
+//           //
+
+//           console.log(
+//             `movie use = ${movieUserString}  and request user =${requestUserString}`
+//           );
+//           if (movieUserString === requestUserString) {
+//             //if (movie.user.toString() === req.user._id.toString()) {
+//             await movie.updateOne({
+//               $set: {
+//                 ratings: {
+//                   rate: req.body.rate,
+//                 },
+//               },
+//             });
+//             return res.status(204).end();
+//           } else if (movieUserString !== requestUserString) {
+//             await movie.updateOne({
+//               $push: {
+//                 ratings: {
+//                   user: req.user._id,
+//                   rate: req.body.rate,
+//                 },
+//               },
+//             });
+//             return res.status(204).end();
+//           } else {
+//             return res
+//               .status(500)
+//               .json({ message: "ratings is not in range of 0-10" });
+//           }
+//         }
+//       }
+//     } else {
+//       return res.status(500).json({
+//         message: "the user is a staff! not allowed to add a movie rating!",
+//       });
+//     }
+//   } catch (err) {
+//     // res.status(500).json({ message: error.message });
+//     next(err);
+//   }
+// };
 
 exports.getCelebrity = async (req, res, next) => {
   try {

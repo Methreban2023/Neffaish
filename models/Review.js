@@ -3,12 +3,9 @@ const { model, Schema } = require("mongoose");
 const reviewSchema = new Schema(
   {
     movie: { type: Schema.Types.ObjectId, ref: "Movie" },
-    usersReviews: [
-      {
-        userId: { type: Schema.Types.ObjectId, ref: "User" },
-        reviewText: { type: String },
-      },
-    ],
+    user: { type: Schema.Types.ObjectId, ref: "User" },
+    reviewText: { type: String },
+    rating: Number,
   },
   { timestamps: true }
 );
