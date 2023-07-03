@@ -1,5 +1,6 @@
 const Movie = require("../../models/Movie");
 const Celebrity = require("../../models/Celebrity");
+const { populate } = require("../../models/User");
 // const User = require("../../models/User");
 
 exports.getAllMovies = async (req, res, next) => {
@@ -14,10 +15,23 @@ exports.getAllMovies = async (req, res, next) => {
 exports.getOneMovie = async (req, res, next) => {
   try {
     const { movieId } = req.params;
-    const movie = await Movie.findById(movieId).populate(
-      "celebrity reviews createdBy"
-    );
+    // if (req.user.staff === false || req.user.staff === true) {
+    const movie = await Movie.findById(movieId)
+      .populate({
+        path: "reviews",
+
+        populate: {
+          path: "user",
+          select: "username",
+        },
+      })
+      .populate("celebrity");
     res.status(200).json(movie);
+    // } else {
+    //   res.status(404).json({
+    //     message: "the movie details must be used by authorized users only!",
+    //   });
+    // }
   } catch (error) {
     next(error);
   }
